@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediksi Persentase Buta Aksara</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .result-card {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result-card h5 {
+            font-size: 1.2rem;
+        }
+        .result-card .result-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2a9d8f;
+        }
+        .btn-prediction {
+            background-color: #2a9d8f;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 text-center">Prediksi Persentase Buta Aksara</h1>
+        
+        <!-- Form Prediksi Provinsi -->
+        <form method="POST" action="/predict" class="mt-4">
+            <div class="form-group">
+                <label for="provinsi">Provinsi</label>
+                <select id="provinsi" name="provinsi" class="form-control" required>
+                    <option value="">Pilih Provinsi</option>
+                    <option value="ACEH">ACEH</option>
+                    <option value="SUMATERA UTARA">SUMATERA UTARA</option>
+                    <option value="SUMATERA BARAT">SUMATERA BARAT</option>
+                    <option value="RIAU">RIAU</option>
+                    <option value="JAMBI">JAMBI</option>
+                    <option value="SUMATERA SELATAN">SUMATERA SELATAN</option>
+                    <option value="BENGKULU">BENGKULU</option>
+                    <option value="LAMPUNG">LAMPUNG</option>
+                    <option value="KEP. BANGKA BELITUNG">KEP. BANGKA BELITUNG</option>
+                    <option value="KEP. RIAU">KEP. RIAU</option>
+                    <option value="DKI JAKARTA">DKI JAKARTA</option>
+                    <option value="JAWA BARAT">JAWA BARAT</option>
+                    <option value="JAWA TENGAH">JAWA TENGAH</option>
+                    <option value="DI YOGYAKARTA">DI YOGYAKARTA</option>
+                    <option value="JAWA TIMUR">JAWA TIMUR</option>
+                    <option value="BANTEN">BANTEN</option>
+                    <option value="BALI">BALI</option>
+                    <option value="NUSA TENGGARA BARAT">NUSA TENGGARA BARAT</option>
+                    <option value="NUSA TENGGARA TIMUR">NUSA TENGGARA TIMUR</option>
+                    <option value="KALIMANTAN BARAT">KALIMANTAN BARAT</option>
+                    <option value="KALIMANTAN TENGAH">KALIMANTAN TENGAH</option>
+                    <option value="KALIMANTAN SELATAN">KALIMANTAN SELATAN</option>
+                    <option value="KALIMANTAN TIMUR">KALIMANTAN TIMUR</option>
+                    <option value="SULAWESI UTARA">SULAWESI UTARA</option>
+                    <option value="SULAWESI TENGAH">SULAWESI TENGAH</option>
+                    <option value="SULAWESI SELATAN">SULAWESI SELATAN</option>
+                    <option value="SULAWESI TENGGARA">SULAWESI TENGGARA</option>
+                    <option value="GORONTALO">GORONTALO</option>
+                    <option value="SULAWESI BARAT">SULAWESI BARAT</option>
+                    <option value="MALUKU">MALUKU</option>
+                    <option value="MALUKU UTARA">MALUKU UTARA</option>
+                    <option value="PAPUA BARAT">PAPUA BARAT</option>
+                    <option value="PAPUA">PAPUA</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tahun">Tahun</label>
+                <input type="number" id="tahun" name="tahun" class="form-control" placeholder="Masukkan tahun" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Prediksi</button>
+        </form>
+
+        {% if provinsi and tahun %}
+        <div class="result-card bg-light">
+            <h3 class="text-center">Hasil Prediksi</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Provinsi</h5>
+                    <p>{{ provinsi }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Tahun</h5>
+                    <p>{{ tahun }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Jenis Kelamin</h5>
+                    <p>Laki-laki & Perempuan</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Laki-laki</h5>
+                    <p class="result-value">{{ male_pred }}%</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Perempuan</h5>
+                    <p class="result-value">{{ female_pred }}%</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Laki-laki + Perempuan</h5>
+                    <p class="result-value">{{ combined_pred }}%</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Form Provinsi dengan Persentase Tertinggi -->
+        <div class="mt-5">
+            <h2 class="text-center">Provinsi dengan Persentase Buta Aksara Tertinggi</h2>
+            <form id="highest-form">
+                <div class="form-group">
+                    <label for="highest-year">Tahun</label>
+                    <input type="number" id="highest-year" name="tahun" class="form-control" placeholder="Masukkan tahun" required>
+                </div>
+                <button type="button" id="btn-highest" class="btn btn-success btn-block btn-prediction">Prediksi Tertinggi</button>
+            </form>
+        </div>
+
+        <!-- Hasil Provinsi Tertinggi -->
+        <div id="highest-result" class="result-card bg-light" style="display: none;">
+            <h3 class="text-center">Hasil Prediksi Tertinggi</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Laki-laki</h5>
+                    <p id="highest-male" class="result-value">-</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Perempuan</h5>
+                    <p id="highest-female" class="result-value">-</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Gabungan</h5>
+                    <p id="highest-combined" class="result-value">-</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#btn-highest').click(function() {
+                const tahun = $('#highest-year').val();
+                if (!tahun) {
+                    alert('Tahun tidak boleh kosong!');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/api/highest',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ Tahun: parseInt(tahun) }),
+                    success: function(response) {
+                        $('#highest-result').show();
+                        $('#highest-male').text(`${response['Tertinggi Per Jenis Kelamin']['Laki-laki']['Provinsi']} (${response['Tertinggi Per Jenis Kelamin']['Laki-laki']['Persentase']}%)`);
+                        $('#highest-female').text(`${response['Tertinggi Per Jenis Kelamin']['Perempuan']['Provinsi']} (${response['Tertinggi Per Jenis Kelamin']['Perempuan']['Persentase']}%)`);
+                        $('#highest-combined').text(`${response['Tertinggi Per Jenis Kelamin']['Gabungan']['Provinsi']} (${response['Tertinggi Per Jenis Kelamin']['Gabungan']['Persentase']}%)`);
+                    },
+                    error: function(error) {
+                        alert('Terjadi kesalahan! Periksa kembali input Anda.');
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
